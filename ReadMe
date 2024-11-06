@@ -1,0 +1,24 @@
+本文用一个简单的jni例子来说明如何使用JNI。
+
+使用JNI步骤：
+生成so文件：
+1.配置好NDK环境
+2.创建一个Java类，声明native方法，如本例中的JNIExample.java
+3.生成.h文件，生成命令：javah -jni com.example.jni.MainActivity
+                    javah -d app/src/main/jni2 -classpath app/src/main/java com.jin.jnidemo.demo2.JNIExample
+4.实现.h文件中的方法，如本例中的JNIExample.c
+5.编译.so文件，命令行切到jni目录下(本例是jni2)，生成命令：ndk-build NDK_APPLICATION_MK=Application.mk （一些配置均在Application.mk中）
+6.在Java类中加载.so文件，如本例中的System.loadLibrary("JNIExample");
+
+调用native方法：
+1.引入jnilibs库，本例中是通过sourceSets {
+                           getByName("main") {
+                               jniLibs.srcDirs("src/main/libs")
+                           }
+                       }配置的。
+7.调用native方法，如本例中的JNIExample.getStringFromNative();
+
+
+项目说明：
+1.项目中带的libs是编译JNIExample生成的so文件，可以直接使用。
+2.jni是监听Native崩溃信号量的，使用时需要重新编译。
